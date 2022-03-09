@@ -14,12 +14,14 @@ class CoursesViewController: UITableViewController {
     private let jsonUrlTwo = "https://swiftbook.ru//wp-content/uploads/api/api_courses"
     private let jsonUrlThree = "https://swiftbook.ru//wp-content/uploads/api/api_website_description"
     private let jsonUrlFour = "https://swiftbook.ru//wp-content/uploads/api/api_missing_or_wrong_fields"
+    private let jsonUrlFive = "https://swiftbook.ru//wp-content/uploads/api/api_courses_capital"
    
     private var courses: [Course] = []
   
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("00000 \(courses.count)")
         return courses.count
     }
 
@@ -105,13 +107,16 @@ class CoursesViewController: UITableViewController {
     }
     
     func fetchDataV() {
-        guard let url = URL(string: jsonUrlTwo) else { return }
+        guard let url = URL(string: jsonUrlFive) else { return }
         
         URLSession.shared.dataTask(with: url) { data, _, _ in
+            
             guard let data = data else { return }
             
             do {
-                self.courses = try JSONDecoder().decode([Course].self, from: data)
+                let decoder = JSONDecoder()
+                //decoder.keyDecodingStrategy = .convertFromSnakeCase
+                self.courses = try decoder.decode([Course].self, from: data)
             } catch let error {
                 print(error)
             }

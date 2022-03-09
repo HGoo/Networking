@@ -17,11 +17,11 @@ class CourseCell: UITableViewCell {
     
     func configure(with course: Course) {
         courseNameLable.text = course.name
-        numberOfLessons.text = "Nimber of Lessons \(course.number_of_lessons ?? 0)"
-        numberOfTests.text = "Nimber of Tests \(course.number_of_tests ?? 0)"
+        numberOfLessons.text = "Nimber of Lessons \(course.numberOfLessons ?? 0)"
+        numberOfTests.text = "Nimber of Tests \(course.numberOfTests ?? 0)"
         
         DispatchQueue.global().async {
-            guard let imageUrl = URL(string: course.imageUrl!) else { return }
+            guard let imageUrl = URL(string: course.imageUrl ?? "") else { return }
             guard let imageData = try? Data(contentsOf: imageUrl) else { return }
            
             DispatchQueue.main.async {

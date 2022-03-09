@@ -14,6 +14,7 @@ enum UserActions: String, CaseIterable {
     case exampleThree = "Exampel Three"
     case exampleFour = "Exampel Four"
     case ourCourses = "Our Courses"
+    case postRequest = "POST Request"
     
 }
 
@@ -52,6 +53,9 @@ class MainViewController: UICollectionViewController {
             performSegue(withIdentifier: "ExampelFour", sender: self)
         case .ourCourses:
             performSegue(withIdentifier: "OurCourses", sender: self)
+        case .postRequest:
+            postRequest()
+            
         }
     }
 
@@ -82,11 +86,42 @@ class MainViewController: UICollectionViewController {
 
 }
 
-    // MARK: - CollectionViewDelegateFlowLayout
+
 extension MainViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         return CGSize(width: UIScreen.main.bounds.width - 48, height: 100)
+    }
+}
+
+extension MainViewController {
+    private func postRequest() {
+        guard let url = URL(string: "https://jsonplaceholder.typicode.com/posts") else { return }
+        
+        let userData = ["course": "Networking",
+                        "lessonn": "GET and POST"]
+        
+        var  request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: userData, options: []) else { return }
+        request.httpBody = httpBody
+        
+        URLSession.shared.dataTask(with: request) { data, response, _ in
+            guard let response = response, let data = data else { return }
+            
+            print(response)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                print(json)
+            } catch let error {
+                print(error)
+            }
+            
+        }.resume()
+        
     }
 }
