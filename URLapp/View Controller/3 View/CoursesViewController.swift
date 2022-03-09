@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class CoursesViewController: UITableViewController {
 
@@ -122,7 +123,15 @@ class CoursesViewController: UITableViewController {
             }
         }.resume()
     }
+       
+    func fetchDataWithAlamofire() {
+        guard let url = URL(string: jsonUrlTwo) else { return }
         
+        request(url).responseJSON { responceJSON in
+            print(responceJSON)
+        }
+        
+    }
 
     
 }
