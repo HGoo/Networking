@@ -20,6 +20,20 @@ struct Course: Decodable {
         case numberOfLessons = "Number_of_lessons"
         case numberOfTests = "Number_of_tests"
     }
+    
+    init(_ dictCourse: [String: Any]) {
+        name = dictCourse["name"] as? String
+        link = dictCourse["link"] as? String
+        imageUrl = dictCourse["imageUrl"] as? String
+        numberOfLessons = dictCourse["number_of_lessons"] as? Int
+        numberOfTests = dictCourse["number_of_tests"] as? Int
+    }
+    
+    static func getCourses(from jsonData: Any) -> [Course] {
+        
+        guard let jsonData = jsonData as? Array<[String: Any]> else { return []}
+        return jsonData.compactMap { Course($0) }
+    }
 }
 
 struct WebsiteDescription: Decodable {

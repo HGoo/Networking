@@ -9,23 +9,23 @@ import UIKit
 import Alamofire
 
 class CoursesViewController: UITableViewController {
-
+    
     // MARK: - Private Properties
     private let jsonUrlOne = "https://swiftbook.ru//wp-content/uploads/api/api_course"
     private let jsonUrlTwo = "https://swiftbook.ru//wp-content/uploads/api/api_courses"
     private let jsonUrlThree = "https://swiftbook.ru//wp-content/uploads/api/api_website_description"
     private let jsonUrlFour = "https://swiftbook.ru//wp-content/uploads/api/api_missing_or_wrong_fields"
     private let jsonUrlFive = "https://swiftbook.ru//wp-content/uploads/api/api_courses_capital"
-   
+    
     private var courses: [Course] = []
-  
-
+    
+    
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print("00000 \(courses.count)")
         return courses.count
     }
-
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "courseCell", for: indexPath) as! CourseCell
@@ -123,15 +123,22 @@ class CoursesViewController: UITableViewController {
             }
         }.resume()
     }
-       
+    
     func fetchDataWithAlamofire() {
         guard let url = URL(string: jsonUrlTwo) else { return }
         
-        request(url).responseJSON { responceJSON in
-            print(responceJSON)
+        AF.request(url).validate().responseJSON { dataResponce in
+            switch dataResponce.result {
+            case .success(let value):
+                self.courses = Course.getCourses(from: value)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
+            }
         }
-        
     }
-
+    
     
 }
